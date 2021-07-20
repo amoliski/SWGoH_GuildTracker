@@ -1,28 +1,28 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-  </div>
+  <v-app>
+    <v-app-bar app dark color="primary" clipped-left>
+      <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
+      <v-btn text to="/">Home</v-btn>
+      <v-spacer></v-spacer>
+      <v-btn text to="/admin">Admin</v-btn>
+    </v-app-bar>
+    <router-view :drawer="drawer" @input:drawer="drawer=$event"/>
+  </v-app>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-
 export default {
   name: 'App',
-  components: {
-    HelloWorld
-  }
+  mounted() {
+    this.$store.dispatch('refresh');
+  },
+  data:() => ({
+    drawer: true,
+  }),
+  computed: {
+    ready() {
+      return this.$store.state.ready;
+    }
+  },
 }
 </script>
-
-<style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
