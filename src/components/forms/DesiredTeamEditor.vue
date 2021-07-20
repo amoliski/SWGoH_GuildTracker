@@ -2,7 +2,7 @@
     <v-card class="pa-10">
 
         <v-card-title>
-        KAM
+        <v-text-field label="Roster Name" v-model="name"></v-text-field>
         </v-card-title>
         <div class="d-flex flex-column align-stretch">
 
@@ -11,12 +11,12 @@
                 <UnitSelection v-model="team_target" ></UnitSelection>
             </div>
             <h5 class="mb-5 align-self-start">Required Units:</h5>
-            <template v-for="unit in desired_team_roster">
+            <template v-for="member in desired_team_roster">
                 <DesiredTeamRow
-                        :key="unit.id"
-                        :id="unit.id"
-                        :is_ship="unit.is_ship"
-                        @delete_row="delete_row"
+                    :key="member.id"
+                    :id="member.id"
+                    :member="member"
+                    @delete_row="delete_row"
                 >
                 </DesiredTeamRow>
             </template>
@@ -25,14 +25,14 @@
         <v-card-actions class="justify-end mt-10">
             <v-btn v-on:click="add_character">Add Character</v-btn>
             <v-btn v-on:click="add_ship">Add Ship</v-btn>
-            <v-btn color="primary">Save</v-btn>
+            <v-btn v-on:click="save" color="primary">Save</v-btn>
         </v-card-actions>
     </v-card>
 </template>
 
 <script>
     import DesiredTeamRow from "./DesiredTeamRow";
-    import UnitSelection from "./Unit_Selection";
+    import UnitSelection from "./UnitSelection";
     import {v4 as uuid} from "uuid";
 
 
@@ -41,27 +41,46 @@
         components: {DesiredTeamRow, UnitSelection},
         data: () => ({
             team_target: '',
-            desired_team_roster: [
-
-            ],
+            name: '',
+            desired_team_roster: [],
         }),
         methods: {
+            async save() {
+              await this.$store.dispatch('add_desired_team', {
+                target_unit: this.team_target,
+                name: this.name,
+                roster: this.desired_team_roster,
+                id: uuid(),
+              });
+              this.team_target = '';
+              this.name = '';
+              this.$set(this, 'desired_team_roster', []);
+            },
             delete_row(id) {
-                console.log({id});
               this.desired_team_roster = this.desired_team_roster.filter(
                   e => e.id !== id
               )
             },
             add_character() {
                 this.desired_team_roster.push({
+                    unit: '',
                     is_ship:false,
                     id:uuid(),
+                    stars: 7,
+                    gear: 13,
+                    relic: 5,
+                    is_relic: true,
                 })
             },
             add_ship() {
                 this.desired_team_roster.push({
+                    unit: '',
                     is_ship:true,
                     id: uuid(),
+                    stars: 7,
+                    gear: 13,
+                    relic: 5,
+                    is_relic: true,
                 })
             }
         }

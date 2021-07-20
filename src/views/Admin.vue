@@ -1,7 +1,7 @@
 
 <template>
   <div>
-    <v-navigation-drawer app clipped="true">
+    <v-navigation-drawer app clipped v-model="_drawer">
       <v-list>
        <v-list-item-group  v-model="selected_item">
 
@@ -21,8 +21,11 @@
 
         <!-- Desired Rosters -->
         <v-list-item link v-for="roster in rosters" :key="roster.id" :value="'view_roster_'+roster.id">
-          <v-list-item-icon>
-            <v-icon>mdi-account-group</v-icon>
+          <v-list-item-icon class="mr-0">
+            <v-avatar size="40px" style="margin-right: 25px; background: grey;">
+              <img v-if="get_unit_by_id(roster.target_unit)" :src="`https://swgoh.gg/${get_unit_by_id(roster.target_unit).image}`"/>
+              <v-icon v-else size="30" color="white">mdi-human-queue</v-icon>
+            </v-avatar>
           </v-list-item-icon>
           <v-list-item-content>
             <v-list-item-title> {{ roster.name }}</v-list-item-title>
@@ -42,62 +45,66 @@
     </v-list>
   </v-navigation-drawer>
   <v-main>
-    <v-container class="py-8 px-6" fluid>
-      <v-row>
-        <v-col
-            v-for="card in 5"
-            :key="card"
-            cols="12">
-          <v-card>
-            <v-subheader>{{ card }}</v-subheader>
-
-            <v-list two-line>
-              <template v-for="n in 6">
-                <v-list-item :key="n">
-                  <v-list-item-avatar color="grey darken-1">
-                  </v-list-item-avatar>
-
-                  <v-list-item-content>
-                    <v-list-item-title>Message {{ n }}</v-list-item-title>
-
-                    <v-list-item-subtitle>
-                      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nihil repellendus distinctio similique
-                    </v-list-item-subtitle>
-                  </v-list-item-content>
-                </v-list-item>
-
-                <v-divider
-                    v-if="n !== 6"
-                    :key="`divider-${n}`"
-                    inset
-                ></v-divider>
-              </template>
-            </v-list>
-          </v-card>
-        </v-col>
-      </v-row>
-    </v-container>
+    <component :is="active_component" :id="params.id"/>
   </v-main>
   </div>
 </template>
 
 <script>
+import TeamViewer from "../components/TeamViewer"
+import TeamBuilder from "../components/TeamBuilder"
+import GuildOverview from "../components/GuildOverview";
+
 export default {
+
   name: 'Admin',
+  methods: {
+    get_unit_by_id(unit_id) {
+      return this.$store.getters['get_unit_by_id'](unit_id);
+    },
+  },
+  props: ['drawer'],
   computed: {
     rosters() {
       return this.$store.state.desired_rosters;
     },
+    params() {
+      return this.$route.params;
+    },
+    _drawer: {
+      get() {return this.drawer},
+      set(e) {this.$emit('input:drawer', e)}
+    },
     active_component() {
-      return '';
+      console.log(this.params.page, this.params.id);
+      if(this.params['page'] && this.params['id']){
+        return TeamViewer;
+      }
+      if(this.params.page === 'add_roster') {
+        return TeamBuilder;
+      }
+      return GuildOverview;
     },
     selected_item: {
       get() {
-        return 'members';
+        const page = this.params?.page;
+        if (page === 'view_roster') {
+          if (this.params.id){
+            return `view_roster_${this.params.id}`
+          } else {
+            return 'members';
+          }
+        }
+        return page || 'members';
       },
-      set(page) {
-        console.log(`setting page ${page}`)
-        this.$router.replace({params: { page }})
+      set(page_id) {
+        if (page_id.indexOf('view_roster') === 0) {
+          let page = 'view_roster';
+          let id = page_id.replace('view_roster_', '');
+          this.$router.replace({params: { page, id }})
+        } else {
+          this.$router.replace({params: { page: page_id, id: null }})
+        }
       },
     }
   },
