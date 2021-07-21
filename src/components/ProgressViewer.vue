@@ -46,8 +46,8 @@
               <v-avatar size="35" class="mb-1">
                 <img :src="header.image"/>
               </v-avatar>
-                <span :class="get_header_classes(unit, header)">
-                  {{header.target}}
+                <span :class="header.target_classes">
+                  {{header.target_val}}
                 </span>
               </div>
               <span v-else :key="unit+'_himgalt'">{{header.text}}</span>
@@ -94,17 +94,20 @@ export default {
       const headers = [
         {text: "Player", value:"name"},
         {text: "Progress %", value:"overall_progress", sort},
-        ...team.roster.map(e => ({
-          text: this.get_unit_by_id(e.unit).name,
-          value: e.unit,
-          is_relic: e.is_relic,
-          is_ship: e.is_ship,
-          is_dark_side: e,
-          target: e.is_ship? e.star : (e.is_relic? e.relic : e.gear),
-          sort:unit_sort,
-          image: `https://swgoh.gg/${this.get_unit_by_id(e.unit)?.image}`,
-        })),
-        {text: "Progress Change", value:"progress_change", sort}
+        {text: "% Change", value:"progress_change", sort},
+        ...team.roster.map(e => {
+          const unit_info = this.get_unit_by_id(e.unit);
+          return {
+            text: unit_info.name,
+            value: e.unit,
+            is_relic: e.is_relic,
+            is_ship: e.is_ship,
+            target_classes: this.get_header_classes(e, unit_info),
+            target_val: e.is_ship? e.stars : (e.is_relic ? e.relic : e.gear),
+            is_dark_side: e,
+            sort:unit_sort,
+            image: `https://swgoh.gg/${unit_info?.image}`,
+        }}),
       ];
       let items = [];
       // Process each player
@@ -153,13 +156,14 @@ export default {
       await this.$store.dispatch('delete_desired_team', this.id);
       this.$emit('team_deleted');
     },
-    get_header_classes(unit, header) {
+    get_header_classes(unit, unit_info) {
+      console.log(unit);
       const result = {
-        ship: header.is_ship,
-        relic: !header.is_ship && header.is_relic,
-        gear: !(header.is_relic || header.is_ship)
+        ship: unit.is_ship,
+        relic: !unit.is_ship && unit.is_relic,
+        gear: !(unit.is_relic || unit.is_ship)
       };
-      result[this.get_unit_by_id(unit).alignment.replace(' ', '')] = true;
+      result[unit_info.alignment.replace(' ', '')] = true;
       return result;
     },
   },
@@ -176,6 +180,19 @@ th[role=columnheader]{
   color: white;
   background-position: 4px -2%;
   background-image: url(https://swgoh.gg/static/img/ui/relic-badge-atlas.png);
+  background-size: 100%;
+  width: 28px;
+  height: 28px;
+  top: 11px;
+  right: -5px;
+  line-height: 33px;
+  text-shadow: -1px -1px 0 #000, 2px -1px 0 #000, 2px 2px 0 #000, -1px 2px 0 #000, 2px 3px 0 #000, 1px 3px 0 #000, 2px 3px 0 #000;
+}
+.ship {
+  position: absolute;
+  text-indent: 10px;
+  color: white;
+  background: center 0 transparent url(https://swgoh.gg/static/img/star.png) no-repeat;
   background-size: 100%;
   width: 28px;
   height: 28px;
