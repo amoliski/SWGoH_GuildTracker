@@ -1,9 +1,9 @@
 <template>
   <div class="__guild_overview__">
-    <v-container class="py-8 px-6">
+    <v-container class="py-8 px-6" >
       <v-row>
         <v-col cols="12">
-          <v-card>
+          <v-card class='overflow-auto' style="max-height: calc(100vh - 115px)">
             <v-card-title>
               Guild Members ({{guild_members.length}}/50)
             </v-card-title>

@@ -4,6 +4,7 @@ import axios from 'axios';
 
 Vue.use(Vuex)
 const API_BASE='https://amoliski.pythonanywhere.com/dathbot';
+//const API_BASE='http://localhost:6969';
 
 export default new Vuex.Store({
   state: {
@@ -12,11 +13,15 @@ export default new Vuex.Store({
     guild_members: [],
     desired_rosters: [],
     roster_progress: [],
+    search_result: {},
     ready: false,
   },
   mutations: {
     set_ships(state, ship_list){
       Vue.set(state, 'ships', ship_list);
+    },
+    set_search_results(state, search_result){
+      Vue.set(state, 'search_result', search_result);
     },
     set_units(state, ship_list){
       Vue.set(state, 'units', ship_list);
@@ -59,6 +64,10 @@ export default new Vuex.Store({
       await dispatch('load_roster_progress');
       await dispatch('load_desired_rosters');
       commit('set_ready', true);
+    },
+    async user_lookup({ commit }, ally_code) {
+      const result = await axios.get(`${API_BASE}/api/user_lookup/${ally_code}`);
+      commit('set_search_results', result.data);
     },
     async load_ships({ commit }){
       const result = await axios.get(`${API_BASE}/api/ships`)

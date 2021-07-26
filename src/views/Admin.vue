@@ -8,14 +8,23 @@
         <v-subheader style="text-transform: uppercase;">Config</v-subheader>
 
         <!-- Member List -->
-        <v-list-item link value="members">
-          <v-list-item-icon>
-            <v-icon>mdi-book</v-icon>
-          </v-list-item-icon>
-          <v-list-item-content>
-            <v-list-item-title> Guild Members</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
+         <v-list-item link value="members">
+           <v-list-item-icon>
+             <v-icon>mdi-book</v-icon>
+           </v-list-item-icon>
+           <v-list-item-content>
+             <v-list-item-title> Guild Members</v-list-item-title>
+           </v-list-item-content>
+         </v-list-item>
+
+         <v-list-item link value="lookup">
+           <v-list-item-icon>
+             <v-icon>mdi-account-search</v-icon>
+           </v-list-item-icon>
+           <v-list-item-content>
+             <v-list-item-title> Player Lookup</v-list-item-title>
+           </v-list-item-content>
+         </v-list-item>
 
         <v-subheader style="text-transform: uppercase;">Desired Rosters</v-subheader>
 
@@ -54,6 +63,7 @@
 import TeamViewer from "../components/TeamViewer"
 import TeamBuilder from "../components/TeamBuilder"
 import GuildOverview from "../components/GuildOverview";
+import PlayerLookup from "../components/PlayerLookup"
 
 export default {
 
@@ -76,9 +86,11 @@ export default {
       set(e) {this.$emit('input:drawer', e)}
     },
     active_component() {
-      console.log(this.params.page, this.params.id);
       if(this.params['page'] && this.params['id']){
         return TeamViewer;
+      }
+      if(this.params.page === 'lookup') {
+        return PlayerLookup;
       }
       if(this.params.page === 'add_roster') {
         return TeamBuilder;
