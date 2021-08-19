@@ -5,7 +5,7 @@
         <v-card>
           <v-card-title>
             <v-avatar size="60px" style="margin-right: 25px; background: grey;">
-              <img v-if="active_team.target_unit" :src="`https://swgoh.gg/${get_unit_by_id(active_team.target_unit).image}`"/>
+              <img v-if="active_team.target_unit" :src="`${get_unit_by_id(active_team.target_unit).image}`"/>
               <v-icon size="50px" color="white" v-else>mdi-human-queue</v-icon>
             </v-avatar>
             {{ active_team.name }}
@@ -106,7 +106,7 @@ export default {
             target_val: e.is_ship? e.stars : (e.is_relic ? e.relic : e.gear),
             is_dark_side: e,
             sort:unit_sort,
-            image: `https://swgoh.gg/${unit_info?.image}`,
+            image: `${unit_info?.image}`,
         }}),
       ];
       let items = [];

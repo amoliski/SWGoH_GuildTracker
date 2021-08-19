@@ -10,7 +10,7 @@
           <v-list-item link v-for="roster in rosters" :key="roster.id" :value="roster.id">
             <v-list-item-icon class="mr-0">
               <v-avatar size="40px" style="margin-right: 25px; background: grey;">
-                <img v-if="get_unit_by_id(roster.target_unit)" :src="`https://swgoh.gg/${get_unit_by_id(roster.target_unit).image}`"/>
+                <img v-if="get_unit_by_id(roster.target_unit)" :src="`${get_unit_by_id(roster.target_unit).image}`"/>
                 <v-icon v-else size="30" color="white">mdi-human-queue</v-icon>
               </v-avatar>
             </v-list-item-icon>

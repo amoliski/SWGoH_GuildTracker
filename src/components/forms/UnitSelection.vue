@@ -1,7 +1,7 @@
 <template>
     <div class="d-flex flex-row">
         <v-avatar size="50px" style="margin-right: 25px;" class="secondary mr-8">
-            <img v-if="selected_image" :src="`https://swgoh.gg/${selected_image}`"/>
+            <img v-if="selected_image" :src="`${selected_image}`"/>
         </v-avatar>
         <v-autocomplete
               clearable

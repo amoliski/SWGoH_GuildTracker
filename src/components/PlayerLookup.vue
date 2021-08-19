@@ -22,7 +22,7 @@
                     <v-avatar size="70px" style="margin-right: 25px; background: grey;">
                       <div>
                         <img v-if="get_unit_image(team.desired_roster.target_unit)"
-                             :src="`https://swgoh.gg/${get_unit_image(team.desired_roster.target_unit)}`"/>
+                             :src="`${get_unit_image(team.desired_roster.target_unit)}`"/>
                         <v-icon size="50px" color="white" v-else>mdi-human-queue</v-icon>
                         <v-progress-circular
                             :rotate="-90"
@@ -35,7 +35,7 @@
                          style="align-items: center; height: 60px; width:60px; position:relative;"
                          class="d-flex flex-column ma-2">
                       <v-avatar size="60px" style="background: grey; position: absolute; top: 0; left:0;">
-                        <img v-if="name" :src="`https://swgoh.gg/${get_unit_by_id(name).image}`"/>
+                        <img v-if="name" :src="`${get_unit_by_id(name).image}`"/>
                         <v-icon size="50px" color="white" v-else>mdi-human-queue</v-icon>
                         </v-avatar>
                         <v-progress-circular

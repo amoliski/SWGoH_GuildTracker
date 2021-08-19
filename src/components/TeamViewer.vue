@@ -5,7 +5,7 @@
         <v-card>
           <v-card-title>
             <v-avatar size="60px" style="margin-right: 25px; background: grey;">
-              <img v-if="active_team.target_unit" :src="`https://swgoh.gg/${get_unit_by_id(active_team.target_unit).image}`"/>
+              <img v-if="active_team.target_unit" :src="`${get_unit_by_id(active_team.target_unit).image}`"/>
               <v-icon size="50px" color="white" v-else>mdi-human-queue</v-icon>
             </v-avatar>
             {{ active_team.name }}
@@ -18,7 +18,7 @@
             <template v-for="(unit, i) in active_team.roster">
               <v-list-item :key="unit.id">
                 <v-list-item-avatar color="grey darken-1">
-                  <img :src="`https://swgoh.gg/${get_unit_by_id(unit.unit).image}`"/>
+                  <img :src="`${get_unit_by_id(unit.unit).image}`"/>
                 </v-list-item-avatar>
 
                 <v-list-item-content>
