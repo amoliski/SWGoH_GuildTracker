@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-navigation-drawer app clipped v-model="_drawer">
+    <v-navigation-drawer app clipped v-model="_drawer" v-if="!standalone">
       <v-list>
         <v-list-item-group  v-model="selected_item">
 
@@ -43,6 +43,9 @@ export default {
   },
   props: ['drawer'],
   computed: {
+    standalone() {
+      return !!this.$route.query.standalone;
+    },
     rosters() {
       return this.$store.state.desired_rosters;
     },

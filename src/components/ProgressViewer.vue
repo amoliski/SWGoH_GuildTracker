@@ -1,5 +1,5 @@
 <template>
-  <v-container v-if="active_team" fluid>
+  <v-container v-if="active_team" fluid id="progress_viewer">
     <v-row>
       <v-col cols="12">
         <v-card>
@@ -11,6 +11,7 @@
             {{ active_team.name }}
             <v-spacer/>
             <v-text-field
+                v-if="!standalone"
                 style="max-width: 300px"
                 v-model="search"
                 prepend-inner-icon="mdi-account-search"
@@ -18,7 +19,7 @@
           </v-card-title>
           <v-data-table
               dense
-              height='calc(100vh - 195px)'
+              :height="standalone? 'auto' : 'calc(100vh - 195px)'"
               :items-per-page="-1"
               mobile-breakpoint="1"
               fixed-header
@@ -30,20 +31,21 @@
 
             <!-- Progress Header -->
             <template v-slot:header.overall_progress="{header}">
-              <span style="font-size:.85em; white-space: nowrap;">{{header.text}}</span>
+              <span style="white-space: nowrap;">{{header.text}}</span>
             </template>
 
             <!-- Progress Display -->
             <template v-slot:item.overall_progress="{item}">
               {{item.overall_progress}}
+              <span style="color:green" v-if="standalone && item.progress_change">({{item.progress_change}})</span>
               <v-progress-linear :color="item.overall_progress === '100%' ? 'rgb(255,247,0)' : 'primary'"
-                                 :value="clean(item.overall_progress)" :test="item"></v-progress-linear>
+                                 :value="clean(item.overall_progress)" :test="item"/>
             </template>
 
             <!-- Unit Headers -->
             <template v-for='unit in unit_names' v-slot:[`header.${unit}`]="{header}">
               <div :key="unit+'_himg'" v-if="header.image" class="pa-0 d-inline-block" style="position: relative">
-              <v-avatar size="35" class="mb-1">
+              <v-avatar :size="standalone? 55 : 35" class="mb-1">
                 <img :src="header.image"/>
               </v-avatar>
                 <span :class="header.target_classes">
@@ -55,11 +57,11 @@
 
             <!-- Unit Display -->
             <template v-for='unit in unit_names' v-slot:[`item.${unit}`]="{item}">
-              <div :key="unit+'_d1'" style="white-space: nowrap">
-                <span  style='font-size: 0.85em;'>
+              <div :key="unit+'_d1'" style="white-space: nowrap;" class="progress_cell" :class="{done:item[unit].progress===100}">
+                <span  class='progress_text'>
                  {{item[unit].progress}}%
                 </span>
-                <span style='color: green; font-size: 0.75em;' v-if="item[unit].delta && !item[unit].new">
+                <span style='color: green;' :style='{"font-size": standalone ? "1.15em": "0.75em"}' v-if="item[unit].delta && !item[unit].new">
                   (+{{item[unit].delta}}%)
                 </span>
               </div>
@@ -80,6 +82,9 @@ export default {
     search: '',
   }),
   computed: {
+    standalone() {
+      return !!this.$route.query.standalone;
+    },
     active_team() {
       return this.$store.getters['get_team_by_id'](this.id);
     },
@@ -109,6 +114,9 @@ export default {
             image: `${unit_info?.image}`,
         }}),
       ];
+      if (this.standalone) {
+        headers.splice(2,1);
+      }
       let items = [];
       // Process each player
       progress.forEach(player => {
@@ -157,7 +165,6 @@ export default {
       this.$emit('team_deleted');
     },
     get_header_classes(unit, unit_info) {
-      console.log(unit);
       const result = {
         ship: unit.is_ship,
         relic: !unit.is_ship && unit.is_relic,
@@ -173,6 +180,27 @@ export default {
 <style>
 th[role=columnheader]{
   white-space: nowrap;
+}
+.standalone table td{
+  padding: 0 !important;
+}
+.standalone table td>.progress_cell{
+  padding: 0px 16px;
+}
+
+.standalone table td>.progress_cell.done {
+  background-color: #bfe2bf;
+}
+.standalone .v-data-table>.v-data-table__wrapper>table>tbody>tr>td,
+.standalone .v-data-table>.v-data-table__wrapper>table>tfoot>tr>td,
+.standalone .v-data-table>.v-data-table__wrapper>table>thead>tr>td {
+  font-size: 1.15rem;
+}
+
+.standalone .v-data-table > .v-data-table__wrapper > table > tbody > tr > th,
+.standalone .v-data-table > .v-data-table__wrapper > table > thead > tr > th,
+.standalone .v-data-table > .v-data-table__wrapper > table > tfoot > tr > th {
+  font-size: 1.15rem;
 }
 .relic {
   position: absolute;
@@ -203,5 +231,24 @@ th[role=columnheader]{
 }
 .relic.DarkSide{
   background-position: 4px 47%;
+}
+
+.standalone .relic{
+  text-indent: 20px;
+  background-position: 4.5px 5.5%;
+  width: 40px;
+  height: 40px;
+  top: 25px;
+  right: -11px;
+}
+.standalone .ship{
+  text-indent: 18px;
+  background-position: 6.5px 0;
+  width: 40px;
+  height: 40px;
+  top: 25px;
+  right: -11px;
+  background-size: 86%;
+  line-height: 38px;
 }
 </style>
