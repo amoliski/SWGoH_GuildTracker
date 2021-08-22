@@ -53,7 +53,7 @@
       </v-list-item-group>
     </v-list>
   </v-navigation-drawer>
-  <v-main>
+  <v-main >
     <component :is="active_component" :id="params.id"/>
   </v-main>
   </div>
@@ -61,7 +61,7 @@
 
 <script>
 import TeamViewer from "../components/TeamViewer"
-import TeamBuilder from "../components/TeamBuilder"
+import TeamCreator from "../components/TeamCreator"
 import GuildOverview from "../components/GuildOverview";
 import PlayerLookup from "../components/PlayerLookup"
 
@@ -75,6 +75,9 @@ export default {
   },
   props: ['drawer'],
   computed: {
+    standalone() {
+      return !!this.$route.query.standalone;
+    },
     rosters() {
       return this.$store.state.desired_rosters;
     },
@@ -93,7 +96,7 @@ export default {
         return PlayerLookup;
       }
       if(this.params.page === 'add_roster') {
-        return TeamBuilder;
+        return TeamCreator;
       }
       return GuildOverview;
     },
@@ -110,7 +113,7 @@ export default {
         return page || 'members';
       },
       set(page_id) {
-        if (page_id.indexOf('view_roster') === 0) {
+        if (page_id && page_id.indexOf('view_roster') === 0) {
           let page = 'view_roster';
           let id = page_id.replace('view_roster_', '');
           this.$router.replace({params: { page, id }})

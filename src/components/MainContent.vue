@@ -11,11 +11,11 @@
 </template>
 
 <script>
-  import desired_team_editor from "./forms/DesiredTeamEditor";
+  import desired_team_creator from "./forms/DesiredTeamCreator";
 
   export default {
     name: 'MainContent',
-    components: {desired_team_editor},
+    components: {desired_team_creator},
     data: () => ({
     }),
   }

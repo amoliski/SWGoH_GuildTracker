@@ -93,6 +93,10 @@ export default new Vuex.Store({
       await axios.post(`${API_BASE}/api/desired_rosters`, {...team});
       await dispatch('refresh');
     },
+    async update_desired_team({ commit, dispatch }, team){
+      await axios.put(`${API_BASE}/api/desired_rosters/${team.id}`, {...team});
+      await dispatch('refresh');
+    },
     async delete_desired_team({ dispatch }, team_id) {
       await axios.delete(`${API_BASE}/api/desired_rosters/${team_id}`)
       await dispatch('refresh');

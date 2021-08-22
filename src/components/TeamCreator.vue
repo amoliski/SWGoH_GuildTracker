@@ -1,16 +1,16 @@
 <template>
-  <v-container style="max-width: 600px;">
+  <v-container style="max-width: 1200px;">
     <v-card>
-      <Desired_team_editor></Desired_team_editor>
+      <desired_team_creator></desired_team_creator>
     </v-card>
   </v-container>
 </template>
 
 <script>
-import Desired_team_editor from "./forms/DesiredTeamEditor";
+import desired_team_creator from "./forms/DesiredTeamCreator";
 export default {
-  name: "TeamBuilder",
-  components: {Desired_team_editor},
+  name: "TeamCreator",
+  components: {desired_team_creator},
   props: ['id'],
   computed: {
     active_team() {
