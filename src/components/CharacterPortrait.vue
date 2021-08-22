@@ -13,26 +13,19 @@
           <div class="star star7 star-inactive"></div>
         </a>
       </div>
-      <div class="collection-char-gp" data-toggle="tooltip" data-container="body" title="" data-original-title="Power 6,115 / 28,644">
-        <div class="collection-char-gp-progress">
-          <div class="collection-char-gp-progress-bar" style="width: 21.3483%;"></div>
-        </div>
-        <div class="collection-char-gp-label">
-          <span class="collection-char-gp-label-value">21</span>
-          <span class="collection-char-gp-label-percent">%</span>
-        </div>
-      </div>
       <div class="collection-char-name">
         <a class="collection-char-name-link" href="/p/979863726/characters/jawa" rel="nofollow">
           Jawa
         </a>
       </div>
+    {{unit}}d
     </div>
 </template>
 
 <script>
 export default {
   name: "Character_Portrait",
+  props: ['unit'],
   computed: {
     alignment_class: 'light_side'
   }

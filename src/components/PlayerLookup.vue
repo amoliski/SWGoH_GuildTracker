@@ -1,7 +1,7 @@
 <template>
   <div class="__player_lookup__">
     <v-container class="py-8 px-6">
-     
+
       <v-row>
         <v-col cols="12">
           <v-card class="overflow-auto" style="max-height: calc(100vh - 140px)">
@@ -16,12 +16,22 @@
                   </template>
                 </v-text-field>
               </v-flex>
+              <div v-if="search_results.name" class="pl-5">
+                  <h2>
+                    <a :href="`https://swgoh.gg${search_results.url}`" style="text-decoration: none;">
+                      {{search_results.name}}
+                    </a>
+                  </h2>
+                <div>
+                  GP: {{formatted_gp}}
+                </div>
+              </div>
               <v-flex>
 
-                <div v-for="(team, i) in search_results" :key="i">
+                <div v-for="(team, i) in rosters" :key="i">
                   <div class="d-flex flex-row ma-2 pa-3 align-center">
                     <v-avatar size="70px" style="margin-right: 25px; background: grey;">
-                      <div style="height:100%; width: 100%">
+                      <div style="height:100%; width: 100%;">
                         <img v-if="get_unit_image(team.desired_roster.target_unit)"
                              :src="`${get_unit_image(team.desired_roster.target_unit)}`"/>
                         <v-icon size="50px" color="white" v-else>mdi-human-queue</v-icon>
@@ -32,26 +42,18 @@
                         </v-progress-circular>
                       </div>
                     </v-avatar>
-                    <div v-for="(unit, name) in team.roster_units" :key="unit.unit"
-                         style="align-items: center; height: 60px; width:60px; position:relative;"
-                         class="d-flex flex-column ma-2">
-                      <div>
-                        {{unit}}
-                      <v-avatar size="60px" style="background: grey; position: absolute; top: 0; left:0;">
-                        <img v-if="name" :src="`${get_unit_by_id(name).image}`" :alt="name+' portrait'"/>
-                        <v-icon size="50px" color="white" v-else>mdi-human-queue</v-icon>
-                      </v-avatar>
-                      <v-progress-circular
-                          :rotate="-90"
-                          size="60" :color="unit.current_progress === 100 ? '#f3cb5a ': 'green'"
-                          :value="unit.current_progress" style="position: absolute; z-index:100; top:0; left: 0">
-                      </v-progress-circular>
+                    <div style="display: flex; flex-wrap: wrap">
+                      <div v-for="(unit, name) in team.roster_units" :key="unit.unit"
+                           class="d-flex flex-column ma-2 roster_entry">
+                        <div>
+                          <CollectionUnit :progress="unit" :unit="get_unit_by_id(name)" style="transform: scale(.85)"></CollectionUnit>
+                        </div>
                       </div>
                     </div>
                   </div>
 
                   <v-divider
-                      v-if="i !== search_results.length - 1"
+                      v-if="i !== rosters.length - 1"
                       :key="`divider-${i}`"
                       inset
                   ></v-divider>
@@ -79,6 +81,9 @@ export default {
     search_results() {
       return this.$store.state.search_result;
     },
+    rosters() {
+      return this.search_results.rosters;
+    },
     data_table() {
       const headers = [
 
@@ -88,6 +93,12 @@ export default {
       ];
       return { headers, items };
     },
+    formatted_gp() {
+      if(this?.search_results?.gp){
+        return this.search_results.gp.toLocaleString()
+      }
+      return '';
+    }
   },
   methods: {
     search(){
@@ -105,6 +116,12 @@ export default {
 
 <style lang="scss">
 .__player_lookup__ {
-
+  .roster_entry{
+    align-items: center;
+    height: 75px;
+    width: 70px;
+    position: relative;
+    transform: translateY(-18px);
+  }
 }
 </style>
