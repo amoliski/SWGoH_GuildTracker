@@ -1,7 +1,7 @@
 
 <template>
   <div>
-    <v-navigation-drawer app clipped v-model="_drawer">
+    <v-navigation-drawer app clipped v-model="_drawer" v-if="!standalone">
       <v-list>
        <v-list-item-group  v-model="selected_item">
 
@@ -89,11 +89,11 @@ export default {
       set(e) {this.$emit('input:drawer', e)}
     },
     active_component() {
-      if(this.params['page'] && this.params['id']){
-        return TeamViewer;
-      }
       if(this.params.page === 'lookup') {
         return PlayerLookup;
+      }
+      if(this.params['page'] && this.params['id']){
+        return TeamViewer;
       }
       if(this.params.page === 'add_roster') {
         return TeamCreator;

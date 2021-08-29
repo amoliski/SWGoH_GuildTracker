@@ -2,7 +2,7 @@
   <div class="__collection_unit__">
     <div class="collection-char collection-char-light-side">
       <div class="player-char-portrait char-portrait-full" :class="[gear_class, alignment_class]">
-        <a href="/p/979863726/characters/echo" class="char-portrait-full-link" rel="nofollow">
+        <a :href="character_link" class="char-portrait-full-link" rel="nofollow">
           <div class="image_stack">
             <img class="char-portrait-full-img initial loading" :src="unit.image" alt="Echo" height="80" width="80"
                  style="position: absolute; top:0; left: 0;"
@@ -19,8 +19,9 @@
               :class="[`star${i}`, `${progress.stars >= i ? '' : 'star-inactive'}`]"
           >
           </div>
-          <div class="char-portrait-full-level">85</div>
+          <div class="char-portrait-full-level">{{ progress.level }}</div>
           <div class="char-portrait-full-relic" v-if="progress.relic > 0">{{progress.relic}}</div>
+          <div class="char-portrait-full-zetas zetas" v-if="progress.zetas > 0">{{progress.zetas}}</div>
           <div class="char-portrait-progress-percent">{{ progress.current_progress }}%</div>
         </a>
       </div>
@@ -31,10 +32,14 @@
 <script>
   export default {
     name: "CollectionUnit",
-    props: ['progress', 'unit'],
+    props: ['progress', 'unit', 'player_id'],
     computed: {
       gear_class(){
         return `char-portrait-full-gear-t${this.progress.gear}`
+      },
+      character_link(){
+        const base_id = this.unit.url.replace('http://swgoh.gg/characters/','').replace('/', '');
+        return 'https://swgoh.gg/p/'+this.player_id+'/characters/'+base_id;
       },
       clip_path() {
         const percent = 100-this.progress.current_progress;
@@ -121,32 +126,36 @@
   .star.star-inactive {
     background-image: url(https://swgoh.gg/static/img/star-inactive.png);
   }
-  .char-portrait-full-relic, .char-portrait-full-zeta, .char-portrait-progress-percent {
+  .char-portrait-full-relic, .char-portrait-full-zeta, .char-portrait-progress-percent, .zetas {
     position: absolute;
     z-index: 4;
-    color: #fff;
+    color: black;
     text-align: center;
-    font-size: 13px;
+    font-size: 18px;
     font-weight: 700;
   }
   .char-portrait-progress-percent {
     background-size: contain;
     width: 50px;
     height: 40px;
-    top: -12px;
+    top: -39px;
     left: 18px;
     line-height: 40px;
-    text-shadow: -1px -1px 0 #333, 2px -1px 0 #333, 2px 2px 0 #333, -1px 2px 0 #333, 2px 3px 0 #333, 1px 3px 0 #333, 2px 3px 0 #333;
-  }
-  .char-portrait-full-zeta {
+     }
+  .zetas{
+    transform: scale(.94);
+    color: white;
+    background: 50% transparent url(https://swgoh.gg/static/img/assets/tex.skill_zeta_glow.png) no-repeat;
     background-size: contain;
     width: 50px;
     height: 40px;
     top: 48px;
     left: -17px;
-    line-height: 40px;
+    line-height: 43px;
     text-shadow: -1px -1px 0 #7028c9, 2px -1px 0 #7028c9, 2px 2px 0 #7028c9, -1px 2px 0 #7028c9, 2px 3px 0 #7028c9, 1px 3px 0 #7028c9, 2px 3px 0 #7028c9;
+    font-size: 15px;
   }
+
   .char-portrait-full-relic {
     background-image: url(https://swgoh.gg/static/img/ui/relic-badge-atlas.png);
     background-size: 100%;
@@ -156,6 +165,9 @@
     right: -13px;
     line-height: 43px;
     text-shadow: -1px -1px 0 #000, 2px -1px 0 #000, 2px 2px 0 #000, -1px 2px 0 #000, 2px 3px 0 #000, 1px 3px 0 #000, 2px 3px 0 #000;
+    .char-portrait-full-alignment-dark-side &{
+      background-position-y:50%;
+    }
   }
   .char-portrait-full-relic, .char-portrait-full-zeta {
     position: absolute;

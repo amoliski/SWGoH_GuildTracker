@@ -10,6 +10,12 @@
             </v-avatar>
             {{ active_team.name }}
             <v-spacer/>
+            <v-btn icon v-on:click="move_team_up()">
+              <v-icon>mdi-arrow-up-bold</v-icon>
+            </v-btn>
+            <v-btn icon v-on:click="move_team_down()">
+              <v-icon>mdi-arrow-down-bold</v-icon>
+            </v-btn>
             <v-btn icon v-on:click="edit_mode=true">
               <v-icon>mdi-pencil</v-icon>
             </v-btn>
@@ -83,6 +89,12 @@ export default {
   methods: {
     get_unit_by_id(unit_id) {
       return this.$store.getters['get_unit_by_id'](unit_id);
+    },
+    async move_team_up(){
+      await this.$store.dispatch('move_desired_team_up', this.id);
+    },
+    async move_team_down(){
+      await this.$store.dispatch('move_desired_team_down', this.id);
     },
     async delete_team() {
       await this.$store.dispatch('delete_desired_team', this.id);

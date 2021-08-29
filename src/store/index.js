@@ -66,8 +66,12 @@ export default new Vuex.Store({
       commit('set_ready', true);
     },
     async user_lookup({ commit }, ally_code) {
-      const result = await axios.get(`${API_BASE}/api/user_lookup/${ally_code}`);
-      commit('set_search_results', result.data);
+      try {
+        const result = await axios.get(`${API_BASE}/api/user_lookup/${ally_code}`);
+        commit('set_search_results', result.data);
+      } catch {
+        commit('set_search_results', {})
+      }
     },
     async load_ships({ commit }){
       const result = await axios.get(`${API_BASE}/api/ships`)
@@ -99,6 +103,14 @@ export default new Vuex.Store({
     },
     async delete_desired_team({ dispatch }, team_id) {
       await axios.delete(`${API_BASE}/api/desired_rosters/${team_id}`)
+      await dispatch('refresh');
+    },
+    async move_desired_team_up({ dispatch }, team_id) {
+      await axios.post(`${API_BASE}/api/move_desired_roster/${team_id}/up`)
+      await dispatch('refresh');
+    },
+    async move_desired_team_down({ dispatch }, team_id) {
+      await axios.post(`${API_BASE}/api/move_desired_roster/${team_id}/down`)
       await dispatch('refresh');
     }
   },
